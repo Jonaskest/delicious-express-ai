@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delicious Express — Delivery Inteligente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <button type="button" class="brand" data-go-tab="home">
+        <img src="/static/images/logotipo.png" alt="Delicious Express" class="brand-logo" onerror="this.style.display='none'">
+        <span class="brand-text">
+          <strong class="brand-name">Delicious Express</strong>
+          <span class="brand-sub">Aracaju • 08h às 23h</span>
+        </span>
+      </button>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="home" role="tab">Início</button>
+        <button class="tab-btn" data-tab="menu" role="tab">
+          Cardápio <span id="nav-cart-badge" class="nav-badge hidden">0</span>
+        </button>
+        <button class="tab-btn" data-tab="admin" role="tab">Cozinha &amp; BI</button>
+      </nav>
+
+      <div class="topbar-right">
+        <span id="pill-ai" class="status-dot" title="Status do Assistente IA">IA: Demo</span>
+        <a href="/docs" target="_blank" class="docs-link">API Docs ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <!-- ==================== ABA 1: INÍCIO ==================== -->
+    <section id="tab-home" class="tab-panel active">
+      <div class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">Delivery Inteligente • Aracaju/SE</span>
+          <h1>Sabores artesanais, pedido pronto em segundos.</h1>
+          <p class="hero-lead">
+            Escolha no cardápio ou apenas escreva o que deseja — nosso assistente com IA monta o pedido com os preços oficiais e envia direto para a cozinha.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-primary btn-lg" data-go-tab="menu">Ver Cardápio</button>
+            <button type="button" class="btn btn-outline btn-lg" id="btn-focus-ai">Pedir com IA</button>
+          </div>
+          <div class="hero-meta">
+            <span>🕒 Todos os dias, 08:00–23:00</span>
+            <span>📍 Região do Shopping Jardins</span>
+            <span>💳 Pix, Cartão ou Dinheiro</span>
+          </div>
+        </div>
+
+        <div class="hero-media">
+          <img src="/static/images/pizza_margherita.jpg" alt="Pizza Artesanal Delicious Express" class="hero-img-main">
+          <div class="hero-float-card">
+            <img src="/static/images/combo_pizza_acai.jpg" alt="Combo Pizza e Açaí">
+            <div>
+              <strong>Mais pedido hoje</strong>
+              <span>Combo Pizza + Açaí por R$ 62</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assistente IA limpo e direto na Home -->
+      <div class="ai-box" id="home-ai-box">
+        <div class="ai-box-head">
+          <div>
+            <h2>Pedido rápido por texto</h2>
+            <p>Escreva seu pedido em uma frase — o servidor valida os itens no banco e calcula o valor exato.</p>
+          </div>
+          <span id="ai-engine-badge" class="engine-pill">Demo Offline</span>
+        </div>
+
+        <form id="ai-form" class="ai-form">
+          <input
+            id="ai-message"
+            type="text"
+            placeholder="Ex.: Sou Jonas, quero 1 Pizza Calabresa e 2 Açaís na Av. Beira Mar, 500, pago no Pix"
+            required
+          >
+          <button type="submit" class="btn btn-dark" id="ai-submit-btn">Montar Pedido</button>
+        </form>
+
+        <div class="quick-chips">
+          <span class="chips-label">Exemplos:</span>
+          <button type="button" class="chip" data-example="Sou Jonas, quero 1 Pizza Calabresa e 2 Açaís para entregar na Av. Beira Mar, 500, pago no Pix">
+            1 Calabresa + 2 Açaís (Pix)
+          </button>
+          <button type="button" class="chip" data-example="Quero 1 Combo Express e uma salada de frutas no cartão de crédito">
+            Combo + Salada (sem endereço)
+          </button>
+          <button type="button" class="chip" data-example="Meu nome é Ana Paula, quero 2 Pizzas Artesanais e 1 Açaí Power na Rua Urquiza Leal, 320, pagamento em dinheiro">
+            2 Pizzas + Açaí Power (Dinheiro)
+          </button>
+        </div>
+
+        <div id="ai-result" class="ai-result hidden"></div>
+      </div>
+
+      <!-- Destaques rápidos -->
+      <div class="home-highlights">
+        <div class="section-head">
+          <h2>Favoritos da casa</h2>
+          <button type="button" class="text-link" data-go-tab="menu">Abrir cardápio completo →</button>
+        </div>
+        <div id="home-featured-grid" class="featured-grid"></div>
+      </div>
+    </section>
+
+    <!-- ==================== ABA 2: CARDÁPIO ==================== -->
+    <section id="tab-menu" class="tab-panel">
+      <div class="page-head">
+        <div>
+          <h1>Cardápio</h1>
+          <p>Selecione seus itens e finalize o pedido com confirmação imediata.</p>
+        </div>
+        <div id="category-filters" class="filter-pills"></div>
+      </div>
+
+      <div class="shop-layout">
+        <div id="menu-grid" class="menu-grid"></div>
+
+        <aside class="cart-card">
+          <div class="cart-head">
+            <h2>Seu Pedido</h2>
+            <button type="button" id="btn-clear-cart" class="text-link-muted hidden">Limpar</button>
+          </div>
+          <div id="cart-items" class="cart-items">
+            <p class="empty-msg">Seu carrinho está vazio. Adicione itens do cardápio ao lado.</p>
+          </div>
+          <div class="cart-total-row">
+            <span>Total</span>
+            <strong id="cart-total">R$ 0,00</strong>
+          </div>
+
+          <form id="checkout-form" class="checkout-form">
+            <label>
+              Nome completo *
+              <input id="cust-name" type="text" required placeholder="Como devemos te chamar?">
+            </label>
+            <label>
+              WhatsApp / Telefone
+              <input id="cust-phone" type="text" placeholder="(79) 99999-0000">
+            </label>
+            <label>
+              Endereço de entrega *
+              <input id="cust-address" type="text" required placeholder="Rua, número e bairro">
+            </label>
+            <label>
+              Pagamento
+              <select id="cust-payment">
+                <option value="Pix">Pix</option>
+                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                <option value="Cartão de Débito">Cartão de Débito</option>
+                <option value="Dinheiro">Dinheiro</option>
+              </select>
+            </label>
+            <label>
+              Observações
+              <input id="cust-notes" type="text" placeholder="Ex.: sem cebola, troco para R$ 100">
+            </label>
+            <button type="submit" class="btn btn-primary btn-block" id="checkout-btn">Confirmar Pedido</button>
+          </form>
+          <div id="checkout-feedback" class="feedback hidden"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ==================== ABA 3: COZINHA & BI ==================== -->
+    <section id="tab-admin" class="tab-panel">
+      <div class="page-head">
+        <div>
+          <h1>Cozinha &amp; Analytics BI</h1>
+          <p>Acompanhamento de pedidos em tempo real, indicadores em Pandas e auditoria Telegram.</p>
+        </div>
+        <div class="admin-actions">
+          <span id="pill-tg" class="engine-pill">Telegram: Log Local</span>
+          <button id="btn-refresh-admin" class="btn btn-outline">Atualizar</button>
+          <a href="/api/analytics/export.csv" class="btn btn-dark" download>Exportar CSV</a>
+        </div>
+      </div>
+
+      <div id="kpi-grid" class="kpi-grid"></div>
+
+      <div class="analytics-grid">
+        <div class="panel-card">
+          <h3>Produtos mais vendidos</h3>
+          <div id="top-products-chart" class="bar-chart"></div>
+        </div>
+        <div class="panel-card">
+          <h3>Canais &amp; Pagamento</h3>
+          <div id="channel-payment-stats" class="mini-stats"></div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="section-head">
+          <h3>Fila de pedidos</h3>
+          <select id="status-filter" class="select-sm">
+            <option value="">Todos os status</option>
+            <option value="recebido">Recebido</option>
+            <option value="em_preparo">Em preparo</option>
+            <option value="saiu_para_entrega">Saiu para entrega</option>
+            <option value="entregue">Entregue</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+        <div id="orders-list" class="orders-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      Delicious Express — FastAPI, SQLAlchemy, Pandas &amp; Google Gemini • Desenvolvido por <strong>Jonas Santos</strong>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
